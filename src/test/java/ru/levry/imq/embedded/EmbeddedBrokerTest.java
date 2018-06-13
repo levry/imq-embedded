@@ -14,38 +14,36 @@ class EmbeddedBrokerTest {
 
     @Test
     void buildAndRunBroker() throws Exception {
-        EmbeddedBroker broker = new EmbeddedBrokerBuilder()
+        EmbeddedBroker broker = EmbeddedBroker.builder()
                 .homeTemp()
                 .build();
+
         broker.run();
 
-        Message message = testSendAndReceiveMessage("Build broker and send message", "localhost", "7676");
+        Message message = sendAndReceiveMessage("Build broker and send message", "localhost", "7676");
 
         assertThat(((TextMessage)message).getText()).isEqualTo("Build broker and send message");
-
-        System.out.println("Received message " + message);
 
         broker.stop();
     }
 
     @Test
     void buildCustomPort() throws Exception {
-        EmbeddedBroker broker = new EmbeddedBrokerBuilder()
+        EmbeddedBroker broker = EmbeddedBroker.builder()
                 .homeTemp()
-                .brokerPort(17676)
+                .port(17676)
                 .build();
+
         broker.run();
 
-        Message message = testSendAndReceiveMessage("Send message to localhost:17676", "localhost", "17676");
+        Message message = sendAndReceiveMessage("Send message to localhost:17676", "localhost", "17676");
 
         assertThat(((TextMessage)message).getText()).isEqualTo("Send message to localhost:17676");
-
-        System.out.println("Received message " + message);
 
         broker.stop();
     }
 
-    private Message testSendAndReceiveMessage(String text, String hostName, String hostPort) throws Exception {
+    private Message sendAndReceiveMessage(String text, String hostName, String hostPort) throws Exception {
         com.sun.messaging.ConnectionFactory qcf = new com.sun.messaging.ConnectionFactory();
         qcf.setProperty(ConnectionConfiguration.imqBrokerHostName, hostName);
         qcf.setProperty(ConnectionConfiguration.imqBrokerHostPort, hostPort);
@@ -53,10 +51,10 @@ class EmbeddedBrokerTest {
 //        qcf.setProperty(ConnectionConfiguration.imqAddressList, "mq://localhost/direct");
 
         try (Connection connection = qcf.createConnection()) {
+            connection.start();
             try (Session session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE)) {
                 Queue queue = session.createQueue("exampleQueue");
                 sendText(text, session, queue);
-                connection.start();
                 return receiveMessage(session, queue);
             }
         }

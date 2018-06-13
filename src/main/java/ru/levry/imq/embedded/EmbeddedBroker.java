@@ -7,4 +7,8 @@ public interface EmbeddedBroker {
     void run();
 
     void stop();
+
+    static EmbeddedBrokerBuilder builder() {
+        return new EmbeddedBrokerBuilder();
+    }
 }
