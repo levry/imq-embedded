@@ -1,0 +1,40 @@
+plugins {
+    id 'java'
+    id 'net.ltgt.apt' version '0.10'
+}
+
+group 'ru.levry'
+version '0.0.1-SNAPSHOT'
+
+sourceCompatibility = 1.8
+
+repositories {
+    mavenCentral()
+}
+
+ext {
+    imqVersion = '5.1'
+    lombokVersion = '1.18.0'
+    logbackVersion = '1.2.3'
+    junitVersion = '5.2.0'
+    assertjVersion = '3.10.0'
+}
+
+dependencies {
+    compile "org.glassfish.mq:imqbroker:${imqVersion}"
+    compile "org.glassfish.mq:imqjmsra:${imqVersion}"
+    compile 'com.google.guava:guava:25.1-jre'
+
+    compile "ch.qos.logback:logback-classic:${logbackVersion}"
+
+    compileOnly "org.projectlombok:lombok:${lombokVersion}"
+    apt "org.projectlombok:lombok:${lombokVersion}"
+
+    testCompile "org.junit.jupiter:junit-jupiter-api:${junitVersion}"
+    testRuntime "org.junit.jupiter:junit-jupiter-engine:${junitVersion}"
+    testCompile "org.assertj:assertj-core:${assertjVersion}"
+}
+
+test {
+    useJUnitPlatform()
+}
