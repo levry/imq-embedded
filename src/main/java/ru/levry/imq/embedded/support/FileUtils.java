@@ -12,29 +12,6 @@ import java.nio.file.attribute.BasicFileAttributes;
 @UtilityClass
 public class FileUtils {
 
-    public static boolean deleteRecursively(Path root) throws IOException {
-        if (root == null) {
-            return false;
-        }
-        if (!root.toFile().exists()) {
-            return false;
-        }
-
-        Files.walkFileTree(root, new SimpleFileVisitor<Path>() {
-            @Override
-            public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
-                Files.delete(file);
-                return FileVisitResult.CONTINUE;
-            }
-            @Override
-            public FileVisitResult postVisitDirectory(Path dir, IOException exc) throws IOException {
-                Files.delete(dir);
-                return FileVisitResult.CONTINUE;
-            }
-        });
-        return true;
-    }
-
     public static void copyRecursively(Path src, Path dest) throws IOException {
         BasicFileAttributes srcAttr = Files.readAttributes(src, BasicFileAttributes.class);
 

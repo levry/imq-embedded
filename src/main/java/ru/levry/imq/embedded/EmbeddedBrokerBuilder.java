@@ -1,5 +1,6 @@
 package ru.levry.imq.embedded;
 
+import com.google.common.io.MoreFiles;
 import com.sun.messaging.jmq.jmsclient.runtime.BrokerInstance; // NOSONAR
 import com.sun.messaging.jmq.jmsclient.runtime.ClientRuntime;  // NOSONAR
 import lombok.SneakyThrows;
@@ -13,6 +14,8 @@ import java.nio.file.Path;
 import java.util.Properties;
 import java.util.function.Supplier;
 
+import static com.google.common.io.RecursiveDeleteOption.ALLOW_INSECURE;
+
 /**
  * @author levry
  */
@@ -22,6 +25,7 @@ public class EmbeddedBrokerBuilder {
     private static final String BROKER_HOME_RESOURCE =
             EmbeddedBrokerBuilder.class.getClassLoader().getResource("openmq").getPath();
     private static final String BROKER_INSTANCE_NAME = "imqbroker";
+    private static final String FALSE = "false";
 
     private Supplier<String> brokerHome;
     private int brokerPort = 7676;
@@ -41,7 +45,7 @@ public class EmbeddedBrokerBuilder {
                 Runtime.getRuntime().addShutdownHook(new Thread(() -> {
                     try {
                         log.debug("Remove temporary directory: {}", homeDir);
-                        FileUtils.deleteRecursively(homeDir);
+                        MoreFiles.deleteRecursively(homeDir, ALLOW_INSECURE);
                     } catch (IOException e) {
                         log.warn("Failed to delete temporary directory on exit: " + e);
                     }
@@ -61,6 +65,10 @@ public class EmbeddedBrokerBuilder {
     public EmbeddedBrokerBuilder port(int brokerPort) {
         this.brokerPort = brokerPort;
         return this;
+    }
+
+    public int getPort() {
+        return brokerPort;
     }
 
     public EmbeddedBrokerBuilder deployToHome() {
@@ -114,9 +122,9 @@ public class EmbeddedBrokerBuilder {
 
     private Properties buildBrokerProps(BrokerInstance brokerInstance, String[] args, String homeDir) {
         Properties props = brokerInstance.parseArgs(args);
-        props.setProperty("imq.jmx.enabled", "false");
-        props.setProperty("imq.persist.file.newTxnLog.enabled", "false");
-        props.setProperty("imq.cluster.enabled", "false");
+        props.setProperty("imq.jmx.enabled", FALSE);
+        props.setProperty("imq.persist.file.newTxnLog.enabled", FALSE);
+        props.setProperty("imq.cluster.enabled", FALSE);
         props.setProperty("imq.instanceshome", homeDir);
         props.setProperty("imq.instancename", BROKER_INSTANCE_NAME);
         return props;

@@ -25,6 +25,8 @@ dependencies {
     compile "org.glassfish.mq:imqjmsra:${imqVersion}"
     compile 'com.google.guava:guava:25.1-jre'
 
+    compileOnly "org.junit.jupiter:junit-jupiter-api:${junitVersion}"
+
     compile "ch.qos.logback:logback-classic:${logbackVersion}"
 
     compileOnly "org.projectlombok:lombok:${lombokVersion}"
