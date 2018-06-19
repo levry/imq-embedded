@@ -23,7 +23,7 @@ ext {
 dependencies {
     compile "org.glassfish.mq:imqbroker:${imqVersion}"
     compile "org.glassfish.mq:imqjmsra:${imqVersion}"
-    compile 'com.google.guava:guava:25.1-jre'
+    compile "commons-io:commons-io:2.6"
 
     compileOnly "org.junit.jupiter:junit-jupiter-api:${junitVersion}"
 
@@ -35,6 +35,9 @@ dependencies {
     testCompile "org.junit.jupiter:junit-jupiter-api:${junitVersion}"
     testRuntime "org.junit.jupiter:junit-jupiter-engine:${junitVersion}"
     testCompile "org.assertj:assertj-core:${assertjVersion}"
+
+    testCompileOnly "org.projectlombok:lombok:${lombokVersion}"
+    testApt "org.projectlombok:lombok:${lombokVersion}"
 }
 
 test {

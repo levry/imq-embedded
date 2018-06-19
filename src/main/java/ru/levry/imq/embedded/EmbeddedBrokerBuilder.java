@@ -1,11 +1,10 @@
 package ru.levry.imq.embedded;
 
-import com.google.common.io.MoreFiles;
 import com.sun.messaging.jmq.jmsclient.runtime.BrokerInstance; // NOSONAR
 import com.sun.messaging.jmq.jmsclient.runtime.ClientRuntime;  // NOSONAR
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
-import ru.levry.imq.embedded.support.FileUtils;
+import org.apache.commons.io.FileUtils;
 
 import java.io.File;
 import java.io.IOException;
@@ -14,7 +13,6 @@ import java.nio.file.Path;
 import java.util.Properties;
 import java.util.function.Supplier;
 
-import static com.google.common.io.RecursiveDeleteOption.ALLOW_INSECURE;
 
 /**
  * @author levry
@@ -42,10 +40,11 @@ public class EmbeddedBrokerBuilder {
         return homeDir(() -> {
             try {
                 Path homeDir = Files.createTempDirectory("imq-emb-");
+
                 Runtime.getRuntime().addShutdownHook(new Thread(() -> {
                     try {
                         log.debug("Remove temporary directory: {}", homeDir);
-                        MoreFiles.deleteRecursively(homeDir, ALLOW_INSECURE);
+                        FileUtils.deleteDirectory(homeDir.toFile());
                     } catch (IOException e) {
                         log.warn("Failed to delete temporary directory on exit: " + e);
                     }
@@ -102,7 +101,7 @@ public class EmbeddedBrokerBuilder {
             log.debug("Deploy a broker resources to path: {}", target);
             File deployDir = new File(target);
             File resourceDir = new File(BROKER_HOME_RESOURCE);
-            FileUtils.copyRecursively(resourceDir.toPath(), deployDir.toPath());
+            FileUtils.copyDirectory(resourceDir, deployDir);
         } catch (IOException e) {
             throw new IllegalStateException("Cannot deploy a broker resources", e);
         }
