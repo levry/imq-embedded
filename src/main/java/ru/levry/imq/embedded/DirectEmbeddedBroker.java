@@ -31,6 +31,11 @@ class DirectEmbeddedBroker implements EmbeddedBroker {
     }
 
     @Override
+    public boolean isRunning() {
+        return directBroker.isBrokerRunning();
+    }
+
+    @Override
     @SneakyThrows
     public ConnectionFactory connectionFactory() {
         com.sun.messaging.ConnectionFactory qcf = new com.sun.messaging.ConnectionFactory();

@@ -11,6 +11,8 @@ public interface EmbeddedBroker {
 
     void stop();
 
+    boolean isRunning();
+
     ConnectionFactory connectionFactory();
 
     static EmbeddedBrokerBuilder builder() {

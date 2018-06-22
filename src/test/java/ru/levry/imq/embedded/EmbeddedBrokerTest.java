@@ -22,6 +22,21 @@ class EmbeddedBrokerTest {
     }
 
     @Test
+    void runAndStopBroker() {
+        EmbeddedBroker broker = EmbeddedBroker.builder().homeTemp().build();
+
+        assertThat(broker.isRunning()).isEqualTo(false);
+
+        broker.run();
+
+        assertThat(broker.isRunning()).isEqualTo(true);
+
+        broker.stop();
+
+        assertThat(broker.isRunning()).isEqualTo(false);
+    }
+
+    @Test
     void buildCustomPort() {
         EmbeddedBroker broker = EmbeddedBroker.builder().homeTemp().port(7777).build();
         broker.run();
