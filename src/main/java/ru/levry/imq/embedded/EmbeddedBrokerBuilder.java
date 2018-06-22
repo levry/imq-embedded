@@ -1,10 +1,10 @@
 package ru.levry.imq.embedded;
 
 import com.sun.messaging.jmq.jmsclient.runtime.BrokerInstance; // NOSONAR
-import com.sun.messaging.jmq.jmsclient.runtime.ClientRuntime;  // NOSONAR
+import com.sun.messaging.jmq.jmsclient.runtime.ClientRuntime; // NOSONAR
 import lombok.SneakyThrows;
-import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
+import org.slf4j.Logger;
 
 import java.io.File;
 import java.io.IOException;
@@ -17,13 +17,13 @@ import java.util.function.Supplier;
 /**
  * @author levry
  */
-@Slf4j
 public class EmbeddedBrokerBuilder {
 
     private static final String BROKER_HOME_RESOURCE =
             EmbeddedBrokerBuilder.class.getClassLoader().getResource("openmq").getPath();
     private static final String BROKER_INSTANCE_NAME = "imqbroker";
     private static final String FALSE = "false";
+    private static final Logger log = org.slf4j.LoggerFactory.getLogger(EmbeddedBrokerBuilder.class);
 
     private Supplier<String> brokerHome;
     private int brokerPort = 7676;
@@ -46,7 +46,7 @@ public class EmbeddedBrokerBuilder {
                         log.debug("Remove temporary directory: {}", homeDir);
                         FileUtils.deleteDirectory(homeDir.toFile());
                     } catch (IOException e) {
-                        log.warn("Failed to delete temporary directory on exit: " + e);
+                        log.warn("Failed to delete temporary directory on exit: {}", e.getMessage());
                     }
                 }));
                 return homeDir.toString();
@@ -64,10 +64,6 @@ public class EmbeddedBrokerBuilder {
     public EmbeddedBrokerBuilder port(int brokerPort) {
         this.brokerPort = brokerPort;
         return this;
-    }
-
-    public int getPort() {
-        return brokerPort;
     }
 
     public EmbeddedBrokerBuilder deployToHome() {
@@ -130,7 +126,7 @@ public class EmbeddedBrokerBuilder {
     }
 
     private EmbeddedBroker createBroker(BrokerInstance brokerInstance) {
-        return new DirectEmbeddedBroker(brokerInstance);
+        return new DirectEmbeddedBroker(brokerInstance, brokerPort);
     }
 
 }

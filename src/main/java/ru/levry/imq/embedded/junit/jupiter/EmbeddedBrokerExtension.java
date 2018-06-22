@@ -5,69 +5,82 @@ import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.extension.AfterAllCallback;
 import org.junit.jupiter.api.extension.BeforeAllCallback;
 import org.junit.jupiter.api.extension.ExtensionContext;
+import org.junit.jupiter.api.extension.ExtensionContext.Namespace;
+import org.junit.jupiter.api.extension.ExtensionContext.Store;
+import org.junit.jupiter.api.extension.TestInstancePostProcessor;
 import ru.levry.imq.embedded.EmbeddedBroker;
-import ru.levry.imq.embedded.EmbeddedBrokerBuilder;
 
 import javax.jms.ConnectionFactory;
-import javax.jms.JMSException;
+import java.lang.reflect.Field;
+import java.util.List;
+import java.util.Optional;
+import java.util.function.Predicate;
 
-import static ru.levry.imq.embedded.support.JmsUtils.createLocalConnectionFactory;
+import static org.junit.platform.commons.util.AnnotationUtils.findAnnotatedFields;
 
 /**
  * @author levry
  */
 @Slf4j
-public class EmbeddedBrokerExtension implements BeforeAllCallback, AfterAllCallback {
+public class EmbeddedBrokerExtension implements BeforeAllCallback, AfterAllCallback, TestInstancePostProcessor {
 
-    private final EmbeddedBroker embeddedBroker;
-    private final ConnectionFactorySupplier connectionFactorySupplier;
-
-    private EmbeddedBrokerExtension(EmbeddedBroker embeddedBroker, ConnectionFactorySupplier connectionFactorySupplier) {
-        this.embeddedBroker = embeddedBroker;
-        this.connectionFactorySupplier = connectionFactorySupplier;
-    }
-
-    public static EmbeddedBrokerExtensionBuilder builder() {
-        return new EmbeddedBrokerExtensionBuilder();
-    }
+    private static final Namespace NAMESPACE = Namespace.create(EmbeddedBrokerExtension.class);
+    private static final String KEY = "embeddedBroker";
 
     @Override
     public void beforeAll(ExtensionContext context) {
+        EmbeddedBroker embeddedBroker = getOrCreateBroker(context);
+
         log.debug("Run broker: {}", embeddedBroker);
         embeddedBroker.run();
     }
 
+    private static EmbeddedBroker getOrCreateBroker(ExtensionContext context) {
+        Store store = getStore(context);
+        return store.getOrComputeIfAbsent(KEY, key -> createBroker(), EmbeddedBroker.class);
+    }
+
+    private static EmbeddedBroker createBroker() {
+        return EmbeddedBroker.builder().homeTemp().build();
+    }
+
     @Override
     public void afterAll(ExtensionContext context) {
-        log.debug("Stop broker: {}", embeddedBroker);
-        embeddedBroker.stop();
+        withBroker(context).ifPresent(embeddedBroker -> {
+            log.debug("Stop broker: {}", embeddedBroker);
+            embeddedBroker.stop();
+        });
+    }
+
+    private static Optional<EmbeddedBroker> withBroker(ExtensionContext context) {
+        Store store = getStore(context);
+        return Optional.ofNullable(store.get(KEY, EmbeddedBroker.class));
+    }
+
+    private static Store getStore(ExtensionContext context) {
+        return context.getRoot().getStore(NAMESPACE);
+    }
+
+    @Override
+    public void postProcessTestInstance(Object testInstance, ExtensionContext context) {
+        Predicate<Field> isConnection = field -> field.getType().isAssignableFrom(ConnectionFactory.class);
+
+        List<Field> fields = findAnnotatedFields(testInstance.getClass(), ImqConnection.class, isConnection);
+        withConnectionFactory(context).ifPresent(connectionFactory ->
+            fields.forEach(field ->
+                setupField(field, testInstance, connectionFactory)
+            )
+        );
+    }
+
+    private Optional<ConnectionFactory> withConnectionFactory(ExtensionContext context) {
+        return withBroker(context).map(EmbeddedBroker::connectionFactory);
     }
 
     @SneakyThrows
-    public ConnectionFactory connectionFactory() {
-        return connectionFactorySupplier.get();
-    }
-
-    public static class EmbeddedBrokerExtensionBuilder {
-
-        private final EmbeddedBrokerBuilder brokerBuilder = EmbeddedBroker.builder().homeTemp();
-
-        public EmbeddedBrokerExtensionBuilder port(int port) {
-            brokerBuilder.port(port);
-            return this;
-        }
-
-        public EmbeddedBrokerExtension build() {
-            final int brokerPort = brokerBuilder.getPort();
-            ConnectionFactorySupplier connectionFactorySupplier = () -> createLocalConnectionFactory(brokerPort);
-            return new EmbeddedBrokerExtension(brokerBuilder.build(), connectionFactorySupplier);
-        }
-
-    }
-
-    @FunctionalInterface
-    interface ConnectionFactorySupplier {
-        ConnectionFactory get() throws JMSException;
+    private void setupField(Field field, Object testInstance, ConnectionFactory connectionFactory) {
+        field.setAccessible(true);
+        field.set(testInstance, connectionFactory);
     }
 
 }

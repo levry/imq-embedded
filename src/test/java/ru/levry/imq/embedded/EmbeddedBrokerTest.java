@@ -3,7 +3,6 @@ package ru.levry.imq.embedded;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static ru.levry.imq.embedded.support.JmsUtils.createLocalConnectionFactory;
 
 /**
  * @author levry
@@ -15,7 +14,7 @@ class EmbeddedBrokerTest {
         EmbeddedBroker broker = EmbeddedBroker.builder().homeTemp().build();
         broker.run();
 
-        String receivedText = sendAndReceive("Build broker and send message", 7676);
+        String receivedText = sendAndReceive("Build broker and send message", broker);
 
         assertThat(receivedText).isEqualTo("Build broker and send message");
 
@@ -24,18 +23,18 @@ class EmbeddedBrokerTest {
 
     @Test
     void buildCustomPort() {
-        EmbeddedBroker broker = EmbeddedBroker.builder().homeTemp().port(17676).build();
+        EmbeddedBroker broker = EmbeddedBroker.builder().homeTemp().port(7777).build();
         broker.run();
 
-        String receivedText = sendAndReceive("Send message to localhost:17676", 17676);
+        String receivedText = sendAndReceive("Send message to localhost:7777", broker);
 
-        assertThat(receivedText).isEqualTo("Send message to localhost:17676");
+        assertThat(receivedText).isEqualTo("Send message to localhost:7777");
 
         broker.stop();
     }
 
-    private String sendAndReceive(String text, int hostPort) {
-        JmsHelper jms = new JmsHelper(createLocalConnectionFactory(hostPort));
+    private String sendAndReceive(String text, EmbeddedBroker broker) {
+        JmsHelper jms = new JmsHelper(broker);
         jms.sendText(text, "testQueue");
         return jms.receiveText("testQueue");
     }

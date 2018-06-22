@@ -1,9 +1,8 @@
 package ru.levry.imq.embedded;
 
-import lombok.SneakyThrows;
-
 import javax.jms.*;
-import javax.jms.IllegalStateException;
+
+import java.lang.IllegalStateException;
 
 import static java.util.concurrent.TimeUnit.SECONDS;
 
@@ -17,6 +16,10 @@ public class JmsHelper {
 
     public JmsHelper(ConnectionFactory connectionFactory) {
         this.connectionFactory = connectionFactory;
+    }
+
+    public JmsHelper(EmbeddedBroker broker) {
+        this(broker.connectionFactory());
     }
 
     public void sendText(String text, String queueName) {
@@ -62,13 +65,14 @@ public class JmsHelper {
         T execute(Session session) throws JMSException;
     }
 
-    @SneakyThrows
     private <T> T withSession(InSessionCallable<T> callable) {
         try (Connection connection = connectionFactory.createConnection()) {
             connection.start();
             try (Session session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE)) {
                 return callable.execute(session);
             }
+        } catch (JMSException e) {
+            throw new IllegalStateException("Error on callable executing", e);
         }
     }
 
