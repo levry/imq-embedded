@@ -1,7 +1,6 @@
 package ru.levry.imq.embedded;
 
 import com.sun.messaging.jmq.jmsclient.runtime.BrokerInstance; // NOSONAR
-import lombok.SneakyThrows;
 
 import javax.jms.ConnectionFactory;
 
@@ -37,7 +36,6 @@ class DirectEmbeddedBroker implements EmbeddedBroker {
     }
 
     @Override
-    @SneakyThrows
     public ConnectionFactory connectionFactory() {
         return createConnectionFactory(brokerPort);
     }

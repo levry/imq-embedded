@@ -7,6 +7,8 @@ import lombok.experimental.UtilityClass;
 import javax.jms.ConnectionFactory;
 
 /**
+ * Internal utility
+ *
  * @author levry
  */
 @UtilityClass

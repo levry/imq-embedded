@@ -19,6 +19,31 @@ import static org.junit.platform.commons.support.AnnotationSupport.findAnnotatio
 import static org.junit.platform.commons.util.AnnotationUtils.findAnnotatedFields;
 
 /**
+ * The embedded broker extension provides a test support interaction with a embedded openMQ broker.
+ *
+ * <p>More specially:
+ * <ul>
+ *     <li>Starts a embedded broker instance before all tests</li>
+ *     <li>Injects {@link ConnectionFactory} into your test</li>
+ * </ul>
+ *
+ * <p>Example:
+ * <pre>
+ *     &#064;ImqBrokerTest
+ *     class MyTests {
+ *
+ *         &#064;ImqConnection
+ *         ConnectionFactory connectionFactory
+ *
+ *         &#064;Test
+ *         void testJmsInteraction() throws Exception {
+ *             try (Connection conn = connectionFactory.createConnection) {
+ *                 // Do it
+ *             }
+ *         }
+ *     }
+ * </pre>
+ *
  * @author levry
  */
 @Slf4j

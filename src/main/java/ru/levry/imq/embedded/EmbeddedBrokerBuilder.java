@@ -15,6 +15,8 @@ import java.util.function.Supplier;
 
 
 /**
+ * Builder for openMQ Broker
+ *
  * @author levry
  */
 @Slf4j
@@ -30,6 +32,9 @@ public class EmbeddedBrokerBuilder {
     private int brokerPort = DEFAULT_BROKER_PORT;
     private boolean withDeploy;
 
+    /**
+     * The location of the base IMQ directory
+     */
     public EmbeddedBrokerBuilder homeDir(String path) {
         return homeDir(() -> path);
     }
@@ -62,11 +67,17 @@ public class EmbeddedBrokerBuilder {
         return this;
     }
 
+    /**
+     * Port number of openMQ broker
+     */
     public EmbeddedBrokerBuilder port(int brokerPort) {
         this.brokerPort = brokerPort;
         return this;
     }
 
+    /**
+     * Copy a openMQ properties files to base directory
+     */
     public EmbeddedBrokerBuilder deployToHome() {
         withDeploy = true;
         return this;
