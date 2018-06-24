@@ -1,4 +1,4 @@
-package ru.levry.imq.embedded.junit.jupiter;
+package com.github.levry.imq.embedded.junit.jupiter;
 
 import java.lang.annotation.*;
 

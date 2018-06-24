@@ -1,4 +1,4 @@
-package ru.levry.imq.embedded;
+package com.github.levry.imq.embedded;
 
 import com.sun.messaging.jmq.jmsclient.runtime.BrokerInstance; // NOSONAR
 import com.sun.messaging.jmq.jmsclient.runtime.ClientRuntime; // NOSONAR

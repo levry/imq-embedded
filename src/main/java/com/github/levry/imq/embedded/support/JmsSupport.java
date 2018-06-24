@@ -1,4 +1,4 @@
-package ru.levry.imq.embedded.support;
+package com.github.levry.imq.embedded.support;
 
 import com.sun.messaging.ConnectionConfiguration; // NOSONAR
 import lombok.SneakyThrows;

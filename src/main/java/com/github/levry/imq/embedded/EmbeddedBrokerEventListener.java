@@ -1,4 +1,4 @@
-package ru.levry.imq.embedded;
+package com.github.levry.imq.embedded;
 
 import com.sun.messaging.jmq.jmsservice.BrokerEvent; // NOSONAR
 import com.sun.messaging.jmq.jmsservice.BrokerEventListener; // NOSONAR

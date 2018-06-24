@@ -1,10 +1,9 @@
-package ru.levry.imq.embedded.junit.jupiter;
+package com.github.levry.imq.embedded.junit.jupiter;
 
+import com.github.levry.imq.embedded.EmbeddedBrokerBuilder;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 import java.lang.annotation.*;
-
-import static ru.levry.imq.embedded.EmbeddedBrokerBuilder.DEFAULT_BROKER_PORT;
 
 /**
  * Enables extension {@link EmbeddedBrokerExtension}.
@@ -26,5 +25,5 @@ public @interface ImqBrokerTest {
     /**
      * Port number of embedded broker
      */
-    int port() default DEFAULT_BROKER_PORT;
+    int port() default EmbeddedBrokerBuilder.DEFAULT_BROKER_PORT;
 }

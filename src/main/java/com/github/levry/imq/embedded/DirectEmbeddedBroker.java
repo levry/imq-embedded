@@ -1,10 +1,10 @@
-package ru.levry.imq.embedded;
+package com.github.levry.imq.embedded;
 
 import com.sun.messaging.jmq.jmsclient.runtime.BrokerInstance; // NOSONAR
 
 import javax.jms.ConnectionFactory;
 
-import static ru.levry.imq.embedded.support.JmsSupport.createConnectionFactory;
+import static com.github.levry.imq.embedded.support.JmsSupport.createConnectionFactory;
 
 /**
  * @author levry

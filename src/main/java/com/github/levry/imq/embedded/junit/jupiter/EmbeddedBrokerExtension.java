@@ -1,12 +1,12 @@
-package ru.levry.imq.embedded.junit.jupiter;
+package com.github.levry.imq.embedded.junit.jupiter;
 
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.extension.*;
 import org.junit.jupiter.api.extension.ExtensionContext.Namespace;
 import org.junit.jupiter.api.extension.ExtensionContext.Store;
-import ru.levry.imq.embedded.EmbeddedBroker;
-import ru.levry.imq.embedded.EmbeddedBrokerBuilder;
+import com.github.levry.imq.embedded.EmbeddedBroker;
+import com.github.levry.imq.embedded.EmbeddedBrokerBuilder;
 
 import javax.jms.ConnectionFactory;
 import java.lang.reflect.Field;

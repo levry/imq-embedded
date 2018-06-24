@@ -1,7 +1,7 @@
-package ru.levry.imq.embedded.junit.jupiter;
+package com.github.levry.imq.embedded.junit.jupiter;
 
 import org.junit.jupiter.api.Test;
-import ru.levry.imq.embedded.JmsHelper;
+import com.github.levry.imq.embedded.JmsHelper;
 
 import javax.jms.ConnectionFactory;
 import javax.jms.TextMessage;
@@ -12,18 +12,21 @@ import static org.assertj.core.api.Assertions.assertThat;
  * @author levry
  */
 @ImqBrokerTest
-class ParameterEmbeddedBrokerExtensionTest {
+class EmbeddedBrokerExtensionTest {
+
+    @ImqConnection
+    private ConnectionFactory connectionFactory;
 
     @Test
-    void resolveParameter(@ImqConnection ConnectionFactory connectionFactory) {
+    void connectionFactory() {
         assertThat(connectionFactory).isNotNull();
     }
 
     @Test
-    void sendMessage(@ImqConnection ConnectionFactory connectionFactory) throws Exception {
-        TextMessage message = sendAndBrowse("Hello, Mr.Parameter!", connectionFactory);
+    void sendMessage() throws Exception {
+        TextMessage message = sendAndBrowse("Hello, Broker!!", connectionFactory);
 
-        assertThat(message.getText()).isEqualTo("Hello, Mr.Parameter!");
+        assertThat(message.getText()).isEqualTo("Hello, Broker!!");
     }
 
     private TextMessage sendAndBrowse(String text, ConnectionFactory connectionFactory) {

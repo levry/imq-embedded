@@ -1,4 +1,4 @@
-package ru.levry.imq.embedded.junit.jupiter;
+package com.github.levry.imq.embedded.junit.jupiter;
 
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test;
 import javax.jms.Connection;
 import javax.jms.ConnectionFactory;
 
-import static ru.levry.imq.embedded.support.JmsSupport.createConnectionFactory;
+import static com.github.levry.imq.embedded.support.JmsSupport.createConnectionFactory;
 
 /**
  * @author levry
