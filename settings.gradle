@@ -1,4 +1,0 @@
-rootProject.name = 'imq-embedded'
-include 'embedded-broker'
-include 'embedded-jupiter'
-

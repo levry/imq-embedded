@@ -34,6 +34,8 @@ public class EmbeddedBrokerBuilder {
 
     /**
      * The location of the base IMQ directory
+     * @param path full path to base directory
+     * @return a reference to this builder
      */
     public EmbeddedBrokerBuilder homeDir(String path) {
         return homeDir(() -> path);
@@ -41,6 +43,7 @@ public class EmbeddedBrokerBuilder {
 
     /**
      * Create temp dir and deploy embedded broker resources
+     * @return a reference to this builder
      */
     public EmbeddedBrokerBuilder homeTemp() {
         return homeDir(() -> Resources.createTempDir("imq-emb-")).deployToHome();
@@ -53,6 +56,8 @@ public class EmbeddedBrokerBuilder {
 
     /**
      * Port number of openMQ broker
+     * @param brokerPort broker port
+     * @return a reference to this builder
      */
     public EmbeddedBrokerBuilder port(int brokerPort) {
         this.brokerPort = brokerPort;
@@ -61,6 +66,7 @@ public class EmbeddedBrokerBuilder {
 
     /**
      * Copy a openMQ properties files to base directory
+     * @return a reference to this builder
      */
     public EmbeddedBrokerBuilder deployToHome() {
         withDeploy = true;

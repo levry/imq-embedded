@@ -32,11 +32,13 @@ public interface EmbeddedBroker {
 
     /**
      * Check if broker is run
+     * @return true when broker is run
      */
     boolean isRunning();
 
     /**
      * Creates a ConnectionFactory that connects to the embedded broker
+     * @return a fresh connection factory
      */
     ConnectionFactory connectionFactory();
 

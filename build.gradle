@@ -1,14 +1,15 @@
 plugins {
+    id 'java'
+    id 'maven'
+    id 'jacoco'
+    id 'org.sonarqube' version '2.6.1'
     id 'net.ltgt.apt' version '0.10'
+    id 'com.jfrog.bintray' version '1.8.4'
 }
 
-allprojects {
-    apply plugin: 'java'
-    apply plugin: 'net.ltgt.apt'
-
-    group = 'com.github.levry.imq'
-    version = '0.0.1-SNAPSHOT'
-}
+description = 'Embedded openMQ Broker'
+group = 'com.github.levry.imq'
+version = '0.0.1'
 
 ext {
     imqVersion = '5.1'
@@ -18,23 +19,70 @@ ext {
     assertjVersion = '3.10.0'
 }
 
-subprojects {
-    test {
-        useJUnitPlatform()
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    compile "org.glassfish.mq:imqbroker:${imqVersion}"
+    compile "org.glassfish.mq:imqjmsra:${imqVersion}"
+
+    compile "commons-io:commons-io:2.6"
+    compile "org.apache.commons:commons-lang3:3.7"
+    compile "ch.qos.logback:logback-classic:${logbackVersion}"
+
+    compileOnly "org.projectlombok:lombok:${lombokVersion}"
+    apt "org.projectlombok:lombok:${lombokVersion}"
+
+    testCompile "org.junit.jupiter:junit-jupiter-api:${junitVersion}"
+    testRuntime "org.junit.jupiter:junit-jupiter-engine:${junitVersion}"
+    testCompile "org.assertj:assertj-core:${assertjVersion}"
+}
+
+test {
+    useJUnitPlatform()
+}
+
+jacocoTestReport {
+    reports {
+        xml.enabled true
     }
+}
 
-    repositories {
-        mavenCentral()
+sonarqube {
+    properties {
+        property "sonar.projectName", project.name
+        property "sonar.projectKey", "github.levry.imq.embedded"
     }
+}
 
-    dependencies {
-        compile "ch.qos.logback:logback-classic:${logbackVersion}"
+task sourcesJar(type: Jar, dependsOn: classes) {
+    classifier = 'sources'
+    from sourceSets.main.allSource
+}
 
-        compileOnly "org.projectlombok:lombok:${lombokVersion}"
-        apt "org.projectlombok:lombok:${lombokVersion}"
+artifacts {
+    archives sourcesJar
+}
 
-        testCompile "org.junit.jupiter:junit-jupiter-api:${junitVersion}"
-        testRuntime "org.junit.jupiter:junit-jupiter-engine:${junitVersion}"
-        testCompile "org.assertj:assertj-core:${assertjVersion}"
+bintray {
+    user = System.getenv('BINTRAY_USER') ?: project.property('bintray.user')
+    key = System.getenv('BINTRAY_KEY') ?: project.property('bintray.key')
+    configurations = ['archives']
+
+    pkg {
+        repo = 'maven'
+        name = 'imq-embedded'
+        licenses = ['MIT']
+        publish = true
+        publicDownloadNumbers = true
+        vcsUrl = 'https://github.com/levry/imq-embedded.git'
+        labels = ['java', 'openmq', 'jms']
+        version {
+            name = project.version
+            desc = project.description
+            released = new Date()
+            vcsTag = project.version
+        }
     }
 }

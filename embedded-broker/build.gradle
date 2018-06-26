@@ -1,8 +1,0 @@
-sourceCompatibility = 1.8
-
-dependencies {
-    compile "org.glassfish.mq:imqbroker:${imqVersion}"
-    compile "org.glassfish.mq:imqjmsra:${imqVersion}"
-    compile "commons-io:commons-io:2.6"
-    compile "org.apache.commons:commons-lang3:3.7"
-}

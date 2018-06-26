@@ -1,6 +1,11 @@
 language: java
 install: true
 jdk: oraclejdk8
+addons:
+  sonarcloud:
+    organization: "levry-github"
+    token:
+      secure: DU7ydIzioDab7HQUF1C9mhkKRfTn5Pq1RIQ7Nor9P5eV61AlDQIL6iKEAdyjmBAsfdNgXGOlxFjpVr6AN95gLcjXiopaaL2GPMV04SS/D4o2dW/dDJyHydLkUZYbppFn/TARYc9OtAHEObFgMU+m5PrHqLaKLAkjlhLysFGMgQ29zVZpeTlB5UaxD21upEj79E1kjSqkFilOZohOafw99gqcaVPCRQLxLdIxp84Hz/gPepaeVoKGzH8TK/SOF2hh9pQntMv9kHIt8XBnTOtOkCrGSlP+df/OYeFqt4R6Nt5nZmww9VJCp1r3CHcHCNDkzeJFjMIybRj5Bul+DUOyNIyHtbwfH2K2o5ZqaBDHCnWPOq6VxMcVcXxBeyT51SuGGdc0o9oonMYstgethnO++19HyuZ44K9zA5t2Csu4iNjOU8BenlLYWCH7O6sSOq0XejUELwIy8S7ICqsK3f91453MjaQwWwJ3CLC+g9bw9iMixLTG/dsh3meErW8NHe5gE3xVn+Ki87pmomx7LFVnwdNF5Kp8zuDAb1Yn102UeJcTH4WxvQyCTZaTJnBHxZ5XSId/WG3fexFWsc6pB0f/5I8KIZh/k3x4xd1rF/9UsEJMwI9ps6hGKE2AExRO5Zj5hikgRcraleiOKiHfrIFRnjIZ4CSvQE6YhMjXQtFOW7E=
 before_cache:
   - rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock
   - rm -fr $HOME/.gradle/caches/*/plugin-resolution/
@@ -8,10 +13,26 @@ cache:
   directories:
     - $HOME/.gradle/caches/
     - $HOME/.gradle/wrapper/
+    - $HOME/.sonar/cache
 before_install:
   - chmod +x gradlew
-script: ./gradlew check --console=plain
+
+jobs:
+  include:
+    - stage: test
+      script:
+        - ./gradlew check --console=plain
+        - ./gradlew jacocoTestReport --console=plain
+        - ./gradlew sonarqube --console=plain
+    - stage: publish
+      script:
+        - ./gradlew assemble -x check
+        - ./gradlew bintrayUpload --console=plain
+      env:
+        - secure: BVfMNV5HE1cD+M1YY8Z/mhDDMgOsU3Pbwx2khgKy31+pDp/B3Qs2+/Mhq1UWUgdq7Svn54IF+fVFgaOaZQGTvh6OPDQQLT4v4Uhfz2R+H69Npzv2mxSwEhpuIvFVa9EuxmfdTx20MiTFFq/t5SCFmcPoMxZxXvGDOCdeLLZNf6u/QfDi2gxYi6kU75JiUn/A4zs3VhVGdk1CKYoqw9AiZ70+fA4nKCA2OdQWxRGrM1ZfCqjEHdV/p2Nq1ACjozPMVBIgsWJgPhGeVcHEsyt9ItI0KiNbnBxPqE7+5KVroSI2Tk4tRtGbEZx20W0JAFkjif15yhk6dqqp6DC6BLkfZivoaTBemn8D/wPGauD2JUBSnnCC/HuTDxdu2AT9rwsavkNaSCkyIadfnHUK9WO+MoFc+5BoOIzvJDsx3egkaO9zg1Lfse2MI2EC5u8zOhvV/0+a3kV+uIsRL4PgDQvTADvSspbkQPamM7ZBocjDXOY9W0X6SzD//SOOZ6ULn4uZSg9iqOPWu+9yPj1Rwaa4IQP8ZWz9+Fzu1oIpoNav2FimHjIdocLcFVywLNZJdy0xZh1PHVqCi0NbZdy5zzFU61nHQML+yL5jwicv163vjj5MaDMfxSKpoC+JlCV3KkpKQbFWLm8DsewW5kSI9q4zFIkcDv5RQM03Ebdl25e8iQk=
+      if: branch = master
+
 branches:
   only:
-  - master
-  - develop
+    - master
+    - develop
