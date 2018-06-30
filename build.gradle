@@ -1,15 +1,13 @@
 plugins {
-    id 'java'
     id 'net.ltgt.apt' version '0.10'
 }
 
-group 'com.github.levry.imq'
-version '0.0.1-SNAPSHOT'
+allprojects {
+    apply plugin: 'java'
+    apply plugin: 'net.ltgt.apt'
 
-sourceCompatibility = 1.8
-
-repositories {
-    mavenCentral()
+    group = 'com.github.levry.imq'
+    version = '0.0.1-SNAPSHOT'
 }
 
 ext {
@@ -20,23 +18,23 @@ ext {
     assertjVersion = '3.10.0'
 }
 
-dependencies {
-    compile "org.glassfish.mq:imqbroker:${imqVersion}"
-    compile "org.glassfish.mq:imqjmsra:${imqVersion}"
-    compile "commons-io:commons-io:2.6"
+subprojects {
+    test {
+        useJUnitPlatform()
+    }
 
-    compileOnly "org.junit.jupiter:junit-jupiter-api:${junitVersion}"
+    repositories {
+        mavenCentral()
+    }
 
-    compile "ch.qos.logback:logback-classic:${logbackVersion}"
+    dependencies {
+        compile "ch.qos.logback:logback-classic:${logbackVersion}"
 
-    compileOnly "org.projectlombok:lombok:${lombokVersion}"
-    apt "org.projectlombok:lombok:${lombokVersion}"
+        compileOnly "org.projectlombok:lombok:${lombokVersion}"
+        apt "org.projectlombok:lombok:${lombokVersion}"
 
-    testCompile "org.junit.jupiter:junit-jupiter-api:${junitVersion}"
-    testRuntime "org.junit.jupiter:junit-jupiter-engine:${junitVersion}"
-    testCompile "org.assertj:assertj-core:${assertjVersion}"
-}
-
-test {
-    useJUnitPlatform()
+        testCompile "org.junit.jupiter:junit-jupiter-api:${junitVersion}"
+        testRuntime "org.junit.jupiter:junit-jupiter-engine:${junitVersion}"
+        testCompile "org.assertj:assertj-core:${assertjVersion}"
+    }
 }
