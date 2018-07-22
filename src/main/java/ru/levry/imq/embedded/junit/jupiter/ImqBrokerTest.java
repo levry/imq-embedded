@@ -4,6 +4,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 
 import java.lang.annotation.*;
 
+import static ru.levry.imq.embedded.EmbeddedBrokerBuilder.DEFAULT_BROKER_PORT;
+
 /**
  * @author levry
  */
@@ -13,4 +15,5 @@ import java.lang.annotation.*;
 @ExtendWith(EmbeddedBrokerExtension.class)
 public @interface ImqBrokerTest {
 
+    int port() default DEFAULT_BROKER_PORT;
 }

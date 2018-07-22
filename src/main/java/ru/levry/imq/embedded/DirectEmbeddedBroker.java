@@ -1,10 +1,11 @@
 package ru.levry.imq.embedded;
 
-import com.sun.messaging.ConnectionConfiguration; // NOSONAR
 import com.sun.messaging.jmq.jmsclient.runtime.BrokerInstance; // NOSONAR
 import lombok.SneakyThrows;
 
 import javax.jms.ConnectionFactory;
+
+import static ru.levry.imq.embedded.support.JmsSupport.createConnectionFactory;
 
 /**
  * @author levry
@@ -38,10 +39,7 @@ class DirectEmbeddedBroker implements EmbeddedBroker {
     @Override
     @SneakyThrows
     public ConnectionFactory connectionFactory() {
-        com.sun.messaging.ConnectionFactory qcf = new com.sun.messaging.ConnectionFactory();
-        qcf.setProperty(ConnectionConfiguration.imqBrokerHostName, "localhost");
-        qcf.setProperty(ConnectionConfiguration.imqBrokerHostPort, Integer.toString(brokerPort));
-        return qcf;
+        return createConnectionFactory(brokerPort);
     }
 
 }

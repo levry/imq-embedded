@@ -21,13 +21,15 @@ class ParameterEmbeddedBrokerExtensionTest {
 
     @Test
     void sendMessage(@ImqConnection ConnectionFactory connectionFactory) throws Exception {
-        JmsHelper jms = new JmsHelper(connectionFactory);
-
-        jms.sendText("Hello, Mr.Parameter!", "testQueue");
-
-        TextMessage message = jms.browseFirst("testQueue");
+        TextMessage message = sendAndBrowse("Hello, Mr.Parameter!", connectionFactory);
 
         assertThat(message.getText()).isEqualTo("Hello, Mr.Parameter!");
+    }
+
+    private TextMessage sendAndBrowse(String text, ConnectionFactory connectionFactory) {
+        JmsHelper jms = new JmsHelper(connectionFactory);
+        jms.sendText(text, "testQueue");
+        return jms.browseFirst("testQueue");
     }
 
 }

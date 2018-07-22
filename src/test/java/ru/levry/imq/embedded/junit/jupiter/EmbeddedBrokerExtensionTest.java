@@ -24,13 +24,15 @@ class EmbeddedBrokerExtensionTest {
 
     @Test
     void sendMessage() throws Exception {
+        TextMessage message = sendAndBrowse("Hello, Broker!!", connectionFactory);
+
+        assertThat(message.getText()).isEqualTo("Hello, Broker!!");
+    }
+
+    private TextMessage sendAndBrowse(String text, ConnectionFactory connectionFactory) {
         JmsHelper jms = new JmsHelper(connectionFactory);
-
-        jms.sendText("Hello, World!!", "testQueue");
-
-        TextMessage message = jms.browseFirst("testQueue");
-
-        assertThat(message.getText()).isEqualTo("Hello, World!!");
+        jms.sendText(text, "testQueue");
+        return jms.browseFirst("testQueue");
     }
 
 }

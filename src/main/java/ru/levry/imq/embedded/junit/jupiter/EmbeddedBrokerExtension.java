@@ -6,6 +6,7 @@ import org.junit.jupiter.api.extension.*;
 import org.junit.jupiter.api.extension.ExtensionContext.Namespace;
 import org.junit.jupiter.api.extension.ExtensionContext.Store;
 import ru.levry.imq.embedded.EmbeddedBroker;
+import ru.levry.imq.embedded.EmbeddedBrokerBuilder;
 
 import javax.jms.ConnectionFactory;
 import java.lang.reflect.Field;
@@ -14,6 +15,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.function.Predicate;
 
+import static org.junit.platform.commons.support.AnnotationSupport.findAnnotation;
 import static org.junit.platform.commons.util.AnnotationUtils.findAnnotatedFields;
 
 /**
@@ -38,12 +40,16 @@ public class EmbeddedBrokerExtension implements BeforeAllCallback,
 
     private static EmbeddedBroker getOrCreateBroker(ExtensionContext context) {
         Store store = getStore(context);
-        BrokerResource resource = store.getOrComputeIfAbsent(KEY, key -> new BrokerResource(createBroker()), BrokerResource.class);
+        BrokerResource resource = store
+                .getOrComputeIfAbsent(KEY, key -> new BrokerResource(createBroker(context)), BrokerResource.class);
         return resource.getBroker();
     }
 
-    private static EmbeddedBroker createBroker() {
-        return EmbeddedBroker.builder().homeTemp().build();
+    private static EmbeddedBroker createBroker(ExtensionContext context) {
+        EmbeddedBrokerBuilder builder = EmbeddedBroker.builder().homeTemp();
+        findAnnotation(context.getRequiredTestClass(), ImqBrokerTest.class)
+                .ifPresent(brokerTest -> builder.port(brokerTest.port()));
+        return builder.build();
     }
 
     @Override

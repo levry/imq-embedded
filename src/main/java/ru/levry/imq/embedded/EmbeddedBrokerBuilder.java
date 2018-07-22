@@ -3,8 +3,8 @@ package ru.levry.imq.embedded;
 import com.sun.messaging.jmq.jmsclient.runtime.BrokerInstance; // NOSONAR
 import com.sun.messaging.jmq.jmsclient.runtime.ClientRuntime; // NOSONAR
 import lombok.SneakyThrows;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
-import org.slf4j.Logger;
 
 import java.io.File;
 import java.io.IOException;
@@ -17,16 +17,17 @@ import java.util.function.Supplier;
 /**
  * @author levry
  */
+@Slf4j
 public class EmbeddedBrokerBuilder {
 
     private static final String BROKER_HOME_RESOURCE =
             EmbeddedBrokerBuilder.class.getClassLoader().getResource("openmq").getPath();
     private static final String BROKER_INSTANCE_NAME = "imqbroker";
+    public static final int DEFAULT_BROKER_PORT = 7676;
     private static final String FALSE = "false";
-    private static final Logger log = org.slf4j.LoggerFactory.getLogger(EmbeddedBrokerBuilder.class);
 
     private Supplier<String> brokerHome;
-    private int brokerPort = 7676;
+    private int brokerPort = DEFAULT_BROKER_PORT;
     private boolean withDeploy;
 
     public EmbeddedBrokerBuilder homeDir(String path) {
