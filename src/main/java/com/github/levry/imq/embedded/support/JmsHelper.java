@@ -3,7 +3,7 @@ package com.github.levry.imq.embedded.support;
 import com.github.levry.imq.embedded.EmbeddedBroker;
 
 import javax.jms.*;
-import java.lang.IllegalStateException;
+import java.lang.IllegalStateException; // NOSONAR
 
 import static java.util.concurrent.TimeUnit.SECONDS;
 
