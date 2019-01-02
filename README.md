@@ -26,13 +26,13 @@ compile 'com.github.levry:imq-embedded:+'
 ### How to use
 
 ```java
-    EmbeddedBroker broker = EmbeddedBroker.builder().homeTemp().build();
-    broker.run();
-    
-    try {
-        ConnectionFactory connectionFactory = broker.connectionFactory();
-        // Do it
-    } finally {
-        broker.stop();
-    }
+EmbeddedBroker broker = EmbeddedBroker.builder().homeTemp().build();
+broker.run();
+
+try {
+    ConnectionFactory connectionFactory = broker.connectionFactory();
+    // Do it
+} finally {
+    broker.stop();
+}
 ```
