@@ -15,7 +15,7 @@ ext {
     imqVersion = '5.1'
     lombokVersion = '1.18.0'
     logbackVersion = '1.2.3'
-    junitVersion = '5.2.0'
+    junitVersion = '5.4.0'
     assertjVersion = '3.10.0'
 }
 
