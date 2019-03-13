@@ -9,7 +9,7 @@ plugins {
 
 description = 'Embedded openMQ Broker'
 group = 'com.github.levry'
-version = '0.0.1'
+version = '0.0.2'
 
 ext {
     imqVersion = '5.1'
