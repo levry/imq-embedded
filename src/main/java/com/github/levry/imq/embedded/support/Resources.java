@@ -14,7 +14,6 @@ import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
 import static org.apache.commons.io.FileUtils.*;
-import static org.apache.commons.lang3.StringUtils.removeStart;
 
 /**
  * Internal utilities for resources
@@ -38,8 +37,10 @@ public class Resources {
     private static void copyJarResourcesRecursively(JarURLConnection source, File destination) throws IOException {
         JarFile jarFile = source.getJarFile();
         for (JarEntry entry : Collections.list(jarFile.entries())) {
-            if (entry.getName().startsWith(source.getEntryName())) {
-                String fileName = removeStart(entry.getName(), source.getEntryName());
+            String entryName = entry.getName();
+            String sourceName = source.getEntryName();
+            if (entryName.startsWith(sourceName)) {
+                String fileName = entryName.substring(sourceName.length());
                 File targetFile = new File(destination, fileName);
                 if (!entry.isDirectory()) {
                     copyInputStreamToFile(jarFile.getInputStream(entry), targetFile);

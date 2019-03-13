@@ -28,7 +28,6 @@ dependencies {
     compile "org.glassfish.mq:imqjmsra:${imqVersion}"
 
     compile "commons-io:commons-io:2.6"
-    compile "org.apache.commons:commons-lang3:3.7"
     compile "ch.qos.logback:logback-classic:${logbackVersion}"
 
     compileOnly "org.projectlombok:lombok:${lombokVersion}"
