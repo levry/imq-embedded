@@ -83,8 +83,7 @@ public class EmbeddedBrokerBuilder {
 
         BrokerInstance brokerInstance = clientRuntime.createBrokerInstance();
 
-        String[] args = buildBrokerArgs(homeDir);
-        Properties brokerProps = buildBrokerProps(brokerInstance, args, homeDir);
+        Properties brokerProps = buildBrokerProps(brokerInstance, homeDir);
         brokerInstance.init(brokerProps, new EmbeddedBrokerEventListener());
 
         return createBroker(brokerInstance);
@@ -104,6 +103,17 @@ public class EmbeddedBrokerBuilder {
         }
     }
 
+    private Properties buildBrokerProps(BrokerInstance brokerInstance, String homeDir) {
+        String[] args = buildBrokerArgs(homeDir);
+        Properties props = brokerInstance.parseArgs(args);
+        props.setProperty("imq.jmx.enabled", FALSE);
+        props.setProperty("imq.persist.file.newTxnLog.enabled", FALSE);
+        props.setProperty("imq.cluster.enabled", FALSE);
+        props.setProperty("imq.instanceshome", homeDir);
+        props.setProperty("imq.instancename", BROKER_INSTANCE_NAME);
+        return props;
+    }
+
     private String[] buildBrokerArgs(String homeDir) {
         return new String[]{
                 "-port", Integer.toString(brokerPort),
@@ -114,16 +124,6 @@ public class EmbeddedBrokerBuilder {
                 "-save",
                 "-silent"
         };
-    }
-
-    private Properties buildBrokerProps(BrokerInstance brokerInstance, String[] args, String homeDir) {
-        Properties props = brokerInstance.parseArgs(args);
-        props.setProperty("imq.jmx.enabled", FALSE);
-        props.setProperty("imq.persist.file.newTxnLog.enabled", FALSE);
-        props.setProperty("imq.cluster.enabled", FALSE);
-        props.setProperty("imq.instanceshome", homeDir);
-        props.setProperty("imq.instancename", BROKER_INSTANCE_NAME);
-        return props;
     }
 
     private EmbeddedBroker createBroker(BrokerInstance brokerInstance) {
