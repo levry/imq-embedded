@@ -13,8 +13,8 @@ version = '0.0.2'
 
 ext {
     imqVersion = '5.1'
+    slf4jVersion = '1.7.+'
     lombokVersion = '1.18.0'
-    logbackVersion = '1.2.3'
     junitVersion = '5.4.0'
     assertjVersion = '3.10.0'
 }
@@ -28,7 +28,7 @@ dependencies {
     compile "org.glassfish.mq:imqjmsra:${imqVersion}"
 
     compile "commons-io:commons-io:2.6"
-    compile "ch.qos.logback:logback-classic:${logbackVersion}"
+    compile "org.slf4j:slf4j-api:${slf4jVersion}"
 
     compileOnly "org.projectlombok:lombok:${lombokVersion}"
     apt "org.projectlombok:lombok:${lombokVersion}"
