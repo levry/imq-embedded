@@ -12,7 +12,7 @@ class EmbeddedBrokerEventListener implements BrokerEventListener {
 
     @Override
     public void brokerEvent(BrokerEvent brokerEvent) {
-        log.debug("Broker event: {}", brokerEvent);
+        log.trace("Broker event: {}", brokerEvent);
     }
 
     @Override
