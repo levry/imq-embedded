@@ -60,8 +60,41 @@ task sourcesJar(type: Jar, dependsOn: classes) {
     from sourceSets.main.allSource
 }
 
+task javadocJar(type: Jar, dependsOn: javadoc) {
+    classifier = 'javadoc'
+    from javadoc.destinationDir
+}
+
 artifacts {
     archives sourcesJar
+    archives javadocJar
+}
+
+install {
+    repositories.mavenInstaller {
+        pom.project {
+            name 'Embedded OpenMQ Broker'
+            description 'Embedded OpenMQ broker for integration testing'
+            url 'https://github.com/levry/imq-embedded'
+            licenses {
+                license {
+                    name 'MIT License'
+                    url 'http://www.opensource.org/licenses/mit-license.php'
+                    distribution 'repo'
+                }
+            }
+            developers {
+                developer {
+                    id 'lriskov'
+                    name 'Leonid Riskov'
+                    email 'lriskov@gmail.com'
+                }
+            }
+            scm {
+                url 'https://github.com/levry/imq-embedded'
+            }
+        }
+    }
 }
 
 bintray {
@@ -75,6 +108,7 @@ bintray {
         licenses = ['MIT']
         publish = true
         publicDownloadNumbers = true
+        websiteUrl = 'https://github.com/levry/imq-embedded'
         vcsUrl = 'https://github.com/levry/imq-embedded.git'
         labels = ['java', 'openmq', 'jms']
         version {
