@@ -19,7 +19,7 @@ repositories {
 ```
 
 ```groovy
-compile 'com.github.levry:imq-embedded:0.0.3'
+compile 'com.github.levry:imq-embedded:0.0.4'
 ```
 
 
