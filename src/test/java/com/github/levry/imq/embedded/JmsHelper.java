@@ -1,6 +1,4 @@
-package com.github.levry.imq.embedded.support;
-
-import com.github.levry.imq.embedded.EmbeddedBroker;
+package com.github.levry.imq.embedded;
 
 import javax.jms.*;
 import java.lang.IllegalStateException; // NOSONAR
@@ -12,20 +10,20 @@ import static java.util.concurrent.TimeUnit.SECONDS;
  *
  * @author levry
  */
-public class JmsHelper {
+class JmsHelper {
 
     private final ConnectionFactory connectionFactory;
     private long defaultTimeout = SECONDS.toMillis(5L);
 
-    public JmsHelper(ConnectionFactory connectionFactory) {
+    private JmsHelper(ConnectionFactory connectionFactory) {
         this.connectionFactory = connectionFactory;
     }
 
-    public JmsHelper(EmbeddedBroker broker) {
+    JmsHelper(EmbeddedBroker broker) {
         this(broker.connectionFactory());
     }
 
-    public void sendText(String text, String queueName) {
+    void sendText(String text, String queueName) {
         withSession(session -> {
             Queue queue = session.createQueue(queueName);
             try (MessageProducer producer = session.createProducer(queue)) {
@@ -36,7 +34,7 @@ public class JmsHelper {
         });
     }
 
-    public String receiveText(String queueName) {
+    String receiveText(String queueName) {
         return withSession(session -> receiveText(session, session.createQueue(queueName), defaultTimeout));
     }
 
@@ -52,15 +50,6 @@ public class JmsHelper {
         try (MessageConsumer consumer = session.createConsumer(queue)) {
             return consumer.receive(timeout);
         }
-    }
-
-    public <T extends Message> T browseFirst(String queueName) {
-        return withSession(session -> {
-            Queue queue = session.createQueue(queueName);
-            try (QueueBrowser browser = session.createBrowser(queue)) {
-                return (T) browser.getEnumeration().nextElement();
-            }
-        });
     }
 
     @FunctionalInterface

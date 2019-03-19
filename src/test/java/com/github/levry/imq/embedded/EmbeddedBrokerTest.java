@@ -1,6 +1,5 @@
 package com.github.levry.imq.embedded;
 
-import com.github.levry.imq.embedded.support.JmsHelper;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
