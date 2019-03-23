@@ -23,7 +23,8 @@ class ResourcesTest {
             "lib/props/broker/default.properties",
             "lib/props/broker/install.properties",
             "var/instances/imqbroker/etc/accesscontrol.properties",
-            "var/instances/imqbroker/etc/passwd"
+            "var/instances/imqbroker/etc/passwd",
+            "var/instances/imqbroker/props/config.properties"
     };
 
     @Test
@@ -40,7 +41,7 @@ class ResourcesTest {
 
     @Test
     void copyResourcesRecursivelyFromDir(@TempDir Path tempDir) throws IOException {
-        URL dir = getClass().getResource("/test/openmq");
+        URL dir = getClass().getResource("/openmq");
         File destination = tempDir.toFile();
 
         Resources.copyResourcesRecursively(dir, destination);
