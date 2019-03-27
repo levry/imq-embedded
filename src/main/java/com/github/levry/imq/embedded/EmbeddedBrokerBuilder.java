@@ -30,7 +30,7 @@ public class EmbeddedBrokerBuilder {
 
     private Supplier<String> brokerHome;
     private int brokerPort = DEFAULT_BROKER_PORT;
-    private boolean withDeploy;
+    private URL homeSource;
 
     /**
      * The location of the base IMQ directory
@@ -46,7 +46,15 @@ public class EmbeddedBrokerBuilder {
      * @return a reference to this builder
      */
     public EmbeddedBrokerBuilder homeTemp() {
-        return homeDir(() -> Resources.createTempDir("imq-emb-")).deployToHome();
+        return createTempHome().deployToHome();
+    }
+
+    /**
+     * Create temp dir for a base broker directory
+     * @return a reference to this builder
+     */
+    public EmbeddedBrokerBuilder createTempHome() {
+        return homeDir(() -> Resources.createTempDir("imq-emb-"));
     }
 
     private EmbeddedBrokerBuilder homeDir(Supplier<String> home) {
@@ -69,7 +77,22 @@ public class EmbeddedBrokerBuilder {
      * @return a reference to this builder
      */
     public EmbeddedBrokerBuilder deployToHome() {
-        withDeploy = true;
+        return deployFrom(BROKER_HOME_RESOURCE);
+    }
+
+    /**
+     * Copy a openMQ custom home directory to base directory
+     * @param homeSource url to custom home directory
+     * @return a reference to this builder
+     */
+    public EmbeddedBrokerBuilder deployFrom(URL homeSource) {
+        this.homeSource = homeSource;
+        return this;
+    }
+
+    @SneakyThrows
+    public EmbeddedBrokerBuilder deployFrom(File homeSource) {
+        this.homeSource = homeSource.toURI().toURL();
         return this;
     }
 
@@ -90,14 +113,14 @@ public class EmbeddedBrokerBuilder {
     }
 
     private void deployBrokerResources(String targetPath) {
-        if(!withDeploy) {
+        if (null == homeSource) {
             return;
         }
 
         try {
             log.debug("Deploy a broker resources to path: {}", targetPath);
             File targetDir = new File(targetPath);
-            Resources.copyResourcesRecursively(BROKER_HOME_RESOURCE, targetDir);
+            Resources.copyResourcesRecursively(homeSource, targetDir);
         } catch (IOException e) {
             throw new IllegalStateException("Cannot deploy a broker resources", e);
         }
