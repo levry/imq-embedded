@@ -10,18 +10,22 @@ This can be useful when creating tests.
 
 ### How to connect the project
 
-Gradle
+#### Gradle
 
 ```groovy
-repositories {
-    jcenter()
-}
+test 'com.github.levry:imq-embedded:0.0.5'
 ```
 
-```groovy
-compile 'com.github.levry:imq-embedded:0.0.4'
-```
+#### Maven
 
+```xml
+<dependency>
+    <groupId>com.github.levry</groupId>
+    <artifactId>imq-embedded</artifactId>
+    <version>0.0.5</version>
+    <scope>test</scope>
+</dependency>
+```
 
 ### How to use
 
